@@ -1,0 +1,21 @@
+{
+    "name": "lonnylot/requests",
+    "version": "0.1.1-dev",
+    "description": "A library whose API is based off of python-requests.org",
+    "keywords": ["user"],
+    "homepage": "https://github.com/lonnylot/requests",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lonny Kapelushnik",
+            "email": "lonny@lonnylot.com",
+            "homepage": "https://www.lonnylot.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    }
+}
