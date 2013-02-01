@@ -5,6 +5,7 @@ namespace Requests;
 class Request
 {
     const GET = 0;
+    const POST = 1;
 
     private $parsedUrl;
     private $method;
@@ -14,6 +15,9 @@ class Request
 
     private $requester;
 
+    /**
+     * Sets up default settings
+     */
     public function __construct()
     {
         $this->namedParams = [
@@ -60,10 +64,10 @@ class Request
     {
         $parsedUrl = parse_url($url);
         if (!isset($parsedUrl["scheme"])) {
-            throw new Exception("URL is missing the scheme.");
+            throw new \Exception("URL is missing the scheme.");
         }
         if (!isset($parsedUrl["host"])) {
-            throw new Exception("URL is missing the host.");
+            throw new \Exception("URL is missing the host.");
         }
 
         $this->parsedUrl = $parsedUrl;

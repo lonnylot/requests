@@ -58,8 +58,14 @@ class Curl implements RequestersInterface
             $this->params[CURLOPT_USERPWD] = "{$preparedParams["auth"]}:{$preparedParams["pass"]}";
         }
 
-        if ($this->method > 0) {
-            $this->params[CURLOPT_POSTFIELDS] = $preparedParams["data"];
+        // Do POST parameters
+        if ($this->method === 1) {
+            $this->params[CURLOPT_POST] = true;
+            if (is_array($preparedParams["data"])) {
+                $this->params[CURLOPT_POSTFIELDS] = http_build_query($preparedParams["data"]);
+            } else {
+                $this->params[CURLOPT_POSTFIELDS] = $preparedParams["data"];
+            }
         }
     }
 

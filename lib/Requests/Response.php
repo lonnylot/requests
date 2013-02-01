@@ -7,7 +7,7 @@ class Response
     private $request;
     private $totalTime;
 
-    private $headers;
+    public $headers;
     private $body;
     private $statusCode = 0;
 
@@ -45,6 +45,10 @@ class Response
         $name = strtolower($name);
         if ($name === "body") {
             return $this->body;
+        } elseif ($name === "totaltime") {
+            return $this->totalTime;
+        } elseif ($name === "statuscode") {
+            return $this->statusCode;
         } elseif (array_key_exists($name, $this->headers)) {
             return $this->headers[$name];
         } else {
@@ -54,14 +58,17 @@ class Response
 
     private function parseHeaders($headers)
     {
+        $responseHeaders = [];
         foreach ($headers AS $header) {
             $parts = explode(":", $header);
             if (count($parts) === 1) {
                 $this->parseStatusCode($parts[0]);
             } else {
-                $this->headers[trim(strtolower($parts[0]))] = trim($parts[1]);
+                $responseHeaders[trim(strtolower($parts[0]))] = trim($parts[1]);
             }
         }
+
+        $this->headers = new Headers($responseHeaders);
     }
 
     private function parseStatusCode($statusCode) {

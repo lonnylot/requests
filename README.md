@@ -5,7 +5,27 @@
 In Development
 
 ## Examples
+### GET Request
 ```php
-$response = (new Get)->request("https://www.lonnylot.com/robots.txt");
-var_dump($response->body);
+<?php
+
+require './vendor/autoload.php';
+require 'lib/Requests/Api.php';
+
+$response = Requests\Get("https://www.google.com/robots.txt");
+if ($response->isOk()) {
+    echo $response->body;
+}
+```
+### POST Request
+```php
+<?php
+
+require './vendor/autoload.php';
+require 'lib/Requests/Api.php';
+
+$response = Requests\Post("https://www.gmail.com/", ["data"=>["foo"=>"bar"]]);
+if ($response->isOk()) {
+    echo "The response content-type is " . $response->headers["content-type"];
+}
 ```
