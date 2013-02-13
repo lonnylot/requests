@@ -55,7 +55,7 @@ class Request
      * @api
      *
      * @param $method Request method defined in constants
-     * @param $url URL we are requesting
+     * @param $url String URL we are requesting
      * @param $namedParams Array w/ keys as string for the request
      * Possible values for $namedParams:
      * params: (optional) Array of key=>val to be sent in the query string
