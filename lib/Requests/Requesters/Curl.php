@@ -6,6 +6,7 @@ class Curl implements RequestersInterface
 {
     private $params;
     private $method;
+    private $headers;
 
     /**
      * Setup default parameters on initialization
@@ -14,9 +15,11 @@ class Curl implements RequestersInterface
     {
         // Set some default parameters
         $this->params[CURLOPT_HEADER] = true;
+        $this->params[CURLINFO_HEADER_OUT] = true;
         $this->params[CURLOPT_RETURNTRANSFER] = true;
-        $this->params[CURLOPT_USERAGENT] = "Requests/0.0.1-dev";
+        $this->params[CURLOPT_USERAGENT] = "Requests/0.1.1-dev";
     }
+
     /**
      * This is a visitor to check if we are able to use this implementation to make requests
      * @param $method The method we are going to be using
@@ -26,6 +29,15 @@ class Curl implements RequestersInterface
     public static function isAvailable($method, $scheme)
     {
         return function_exists('curl_init') ? true : false;
+    }
+
+    /**
+     * Get the headers used in the request
+     * @return String
+     */
+    public function getRequestHeaders()
+    {
+        return $this->headers;
     }
 
     /**
@@ -45,10 +57,6 @@ class Curl implements RequestersInterface
         $this->params = [
             CURLOPT_URL => $preparedParams["url"],
             CURLOPT_HTTPHEADER => $preparedParams["headers"],
-            CURLOPT_COOKIE => explode(";", array_walk(
-                                    $preparedParams["cookies"],
-                                    function($name, $value){ return "{$name}={$value}";}
-                                )),
             CURLOPT_TIMEOUT => $preparedParams["timeout"],
             CURLOPT_FOLLOWLOCATION => $preparedParams["allowRedirects"]
         ] + $this->params;
@@ -56,6 +64,14 @@ class Curl implements RequestersInterface
         if (array_key_exists("user", $preparedParams["auth"]) && array_key_exists("pass", $preparedParams["auth"])) {
             $this->params[CURLOPT_HTTPAUTH] = "CURLAUTH_BASIC";
             $this->params[CURLOPT_USERPWD] = "{$preparedParams["auth"]}:{$preparedParams["pass"]}";
+        }
+
+        // Handle cookies
+        if (is_string($preparedParams["cookies"]) && is_file($preparedParams["cookies"])) {
+            $this->params[CURLOPT_COOKIEFILE] = $preparedParams["cookies"];
+            $this->params[CURLOPT_COOKIEJAR] = $preparedParams["cookies"];
+        } elseif (is_array($preparedParams["cookies"]) && count($preparedParams["cookies"])) {
+            $this->params[CURLOPT_COOKIE] = implode(";", $preparedParams["cookies"]);
         }
 
         // Do POST parameters
@@ -79,6 +95,7 @@ class Curl implements RequestersInterface
         curl_setopt_array($ch, $this->params);
         $response = curl_exec($ch);
         $totalTime = curl_getinfo($ch, CURLINFO_TOTAL_TIME);
+        $this->headers = curl_getinfo($ch, CURLINFO_HEADER_OUT);
         curl_close($ch);
 
         list($headers, $body) = explode("\r\n\r\n", $response, 2);

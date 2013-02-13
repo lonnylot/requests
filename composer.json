@@ -1,6 +1,6 @@
 {
     "name": "lonnylot/requests",
-    "version": "0.1.2-dev",
+    "version": "0.1.1-dev",
     "description": "A library whose API is based off of python-requests.org",
     "keywords": ["user"],
     "homepage": "https://github.com/lonnylot/requests",

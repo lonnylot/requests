@@ -13,7 +13,7 @@ class GetTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($response->isOk(), $response->statusCode . " was returned.");
     }
 
-    public function testHeader()
+    public function testResponseHeader()
     {
         $response = Requests\Get("https://www.google.com/robots.txt");
         $this->assertEquals("text/plain", $response->headers["content-type"]);

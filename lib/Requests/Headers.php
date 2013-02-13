@@ -8,6 +8,9 @@ class Headers implements \ArrayAccess
 
     /**
      * Construct a new Headers object and set the headers on instantiation
+     *
+     * @api
+     *
      * @param array $headers The headers to be set
      */
     public function __construct(array $headers)

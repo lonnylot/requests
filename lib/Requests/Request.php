@@ -14,9 +14,12 @@ class Request
     private $availableRequesters;
 
     private $requester;
+    public $headers;
 
     /**
      * Sets up default settings
+     *
+     * @api
      */
     public function __construct()
     {
@@ -33,6 +36,24 @@ class Request
     }
 
     /**
+     * @param $name
+     * @return null|String
+     */
+    public function __get($name)
+    {
+        $name = strtolower($name);
+        if (array_key_exists($name, $this->headers)) {
+            return $this->headers[$name];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Run the request
+     *
+     * @api
+     *
      * @param $method Request method defined in constants
      * @param $url URL we are requesting
      * @param $namedParams Array w/ keys as string for the request
@@ -40,7 +61,7 @@ class Request
      * params: (optional) Array of key=>val to be sent in the query string
      * data: (optional) Array or String to be sent in the body
      * headers: (optional) Array of HTTP Headers
-     * cookies: (optional) Array of cookies
+     * cookies: (optional) Array of cookies or String of the file for a cookie JAR
      * auth: (optional) Array of ["user"=>"","pass"=>""] for Basic HTTP Auth
      * timeout: (optional) Float describing the timeout of the request.
      * allowRedirects: (optional) Boolean. Set to True if redirect following is allowed.
@@ -50,6 +71,9 @@ class Request
      * verify: (optional) if ``True``, the SSL cert will be verified. A CA_BUNDLE path can also be provided.
      * stream: (optional) if ``False``, the response content will be immediately downloaded.
      * cert: (optional) if String, path to ssl client cert file (.pem). If Tuple, ('cert', 'key') pair.
+     *
+     * @return \Requests\Response
+     *
      */
     public function request($method, $url, $namedParams)
     {
@@ -115,6 +139,7 @@ class Request
         $this->requester->setMethod($this->method);
         $this->requester->setParams($this->preparedParams);
         $response = $this->requester->request();
+        $this->parseHeaders(explode("\r\n", $this->requester->getRequestHeaders()));
         return new Response($response, $this);
     }
 
@@ -129,5 +154,20 @@ class Request
         if (isset($this->requester) === false) {
             throw new \Exception("No requester is available for {$this->method} and {$this->parsedUrl['scheme']}");
         }
+    }
+
+    private function parseHeaders($headers)
+    {
+        $requestHeaders = [];
+        foreach ($headers AS $header) {
+            if (strpos($header, ":") === false) {
+                $requestHeaders["method"] = trim($header);
+            } else {
+                $parts = explode(":", $header);
+                $requestHeaders[trim(strtolower($parts[0]))] = trim($parts[1]);
+            }
+        }
+
+        $this->headers = new \Requests\Headers($requestHeaders);
     }
 }

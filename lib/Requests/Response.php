@@ -12,6 +12,8 @@ class Response
     private $statusCode = 0;
 
     /**
+     * @api
+     *
      * @param $response The response array given from the Requesters adapter
      * @param $request The Request object that called this object
      */
@@ -25,6 +27,9 @@ class Response
 
     /**
      * Check if the response is OK
+     *
+     * @api
+     *
      * @return bool
      */
     public function isOk()
