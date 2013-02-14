@@ -100,7 +100,7 @@ class Request
     private function prepareParams()
     {
         // Build the URL
-        $this->preparedParams["url"] = $this->parsedUrl["scheme"] . "://" . $this->parsedUrl["host"];
+        $this->preparedParams["url"] = $this->parsedUrl["scheme"] . "://" . $this->parsedUrl["host"] . ":" . $this->parsedUrl["port"];
 
         if ($this->parsedUrl["path"]) {
             $this->preparedParams["url"] .= $this->parsedUrl["path"];
@@ -110,7 +110,9 @@ class Request
             parse_str($this->parsedUrl["query"], $params);
             $this->namedParams["params"] = array_merge($params, $this->namedParams["params"]);
         }
-        $this->preparedParams["url"] .= http_build_query($this->namedParams['params']);
+        if (count($this->namedParams["params"])) {
+            $this->preparedParams["url"] .= "?" . http_build_query($this->namedParams['params']);
+        }
 
         if ($this->parsedUrl["fragment"]) {
             $this->preparedParams["url"] .= "#{$this->parsedUrl["fragment"]}";
