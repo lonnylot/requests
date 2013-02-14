@@ -20,21 +20,21 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testHeader()
     {
         $request = new Requests\Request();
-        $request->request(Requests\Request::GET, "https://www.google.com/robots.txt", ["headers" => ["User-Agent: RequestsTest"]]);
+        $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["headers" => ["User-Agent: RequestsTest"]]);
         $this->assertEquals("RequestsTest", $request->headers["user-agent"]);
     }
 
     public function testCookies()
     {
         $request = new Requests\Request();
-        $request->request(Requests\Request::GET, "https://www.google.com/robots.txt", ["cookies" => ["PHPSESSID=263b62a606693a0c1133cf5aac9db6b2","MYPHPNET=en%2Cquickref%2CNONE%2C0%2C"]]);
+        $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["cookies" => ["PHPSESSID=263b62a606693a0c1133cf5aac9db6b2","MYPHPNET=en%2Cquickref%2CNONE%2C0%2C"]]);
         $this->assertEquals("PHPSESSID=263b62a606693a0c1133cf5aac9db6b2;MYPHPNET=en%2Cquickref%2CNONE%2C0%2C", $request->headers["cookie"]);
     }
 
     public function testSetCookieJar()
     {
         $request = new Requests\Request();
-        $response = $request->request(Requests\Request::GET, "http://www.php.net", ["cookies" => $this->cookieJar]);
+        $response = $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["cookies" => $this->cookieJar]);
 
         $this->assertRegExp("/".file_get_contents(__DIR__ . "/cookie.jar.expected")."/", file_get_contents($this->cookieJar));
 
@@ -48,34 +48,34 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testCookieJar($cookie)
     {
         $request = new Requests\Request();
-        $request->request(Requests\Request::GET, "http://www.php.net", ["cookies" => [$cookie]]);
+        $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["cookies" => [$cookie]]);
         $this->assertEquals($cookie, $request->headers["cookie"]);
     }
 
     public function testTimeout()
     {
         $request = new Requests\Request();
-        $response = $request->request(Requests\Request::GET, "http://www.huffingtonpost.com", ["timeout" => 1]);
-        // Add a bit of padding to our timeout check
-        $this->assertLessThanOrEqual(1.1, $response->totaltime);
+        $response = $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["params" => ["testTimeout" => "yes"], "timeout" => 1]);
+
+        $this->assertLessThan($response->totaltime, 1);
     }
 
     public function testRedirectNotFollowed()
     {
         $request = new Requests\Request();
-        $response = $request->request(Requests\Request::GET, "http://huffingtonpost.com", []);
+        $response = $request->request(Requests\Request::GET, "http://localhost:8080/RequestTest.php", []);
 
         $this->assertEquals(301, $response->statuscode);
-        $this->assertEquals("huffingtonpost.com", $request->headers["host"]);
+        $this->assertNotEquals("8000 HTTP/1.1", $request->headers["get /localhost"]);
     }
 
     public function testRedirectFollowed()
     {
         $request = new Requests\Request();
-        $response = $request->request(Requests\Request::GET, "http://huffingtonpost.com", ["allowRedirects" => true]);
+        $response = $request->request(Requests\Request::GET, "http://localhost:8080/RequestTest.php", ["allowRedirects" => true]);
 
         $this->assertEquals(301, $response->statuscode);
-        $this->assertEquals("www.huffingtonpost.com", $request->headers["host"]);
+        $this->assertEquals("8000 HTTP/1.1", $request->headers["get /localhost"]);
     }
 
     public function testAuth()

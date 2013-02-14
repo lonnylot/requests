@@ -9,13 +9,13 @@ class GetTest extends \PHPUnit_Framework_TestCase
 
     public function testOk()
     {
-        $response = Requests\Get("https://www.google.com/robots.txt");
+        $response = Requests\Get("http://localhost:8000/GetTest.php");
         $this->assertTrue($response->isOk(), $response->statusCode . " was returned.");
     }
 
     public function testResponseHeader()
     {
-        $response = Requests\Get("https://www.google.com/robots.txt");
+        $response = Requests\Get("http://localhost:8000/GetTest.php");
         $this->assertEquals("text/plain", $response->headers["content-type"]);
     }
 }
