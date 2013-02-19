@@ -2,11 +2,18 @@
 
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
-    public function testHeader()
+    public function testHeaders()
     {
         $request = new Requests\Request();
         $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["headers" => ["User-Agent: RequestsTest"]]);
         $this->assertEquals("RequestsTest", $request->headers["user-agent"]);
+    }
+
+    public function testUserAgent()
+    {
+        $request = new Requests\Request();
+        $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", []);
+        $this->assertEquals("Requests/" . \Requests\Version, $request->headers["user-agent"]);
     }
 
     public function testTimeout()

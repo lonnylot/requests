@@ -2,6 +2,10 @@
 
 namespace Requests\Requesters;
 
+if (defined("\Requests\Version") === false) {
+    require_once(realpath(__DIR__ . "/../Api.php"));
+}
+
 class Curl implements RequestersInterface
 {
     private $params;
@@ -17,13 +21,13 @@ class Curl implements RequestersInterface
         $this->params[CURLOPT_HEADER] = true;
         $this->params[CURLINFO_HEADER_OUT] = true;
         $this->params[CURLOPT_RETURNTRANSFER] = true;
-        $this->params[CURLOPT_USERAGENT] = "Requests/0.1.1-dev";
+        $this->params[CURLOPT_USERAGENT] = "Requests/" . \Requests\Version;
     }
 
     /**
      * This is a visitor to check if we are able to use this implementation to make requests
-     * @param $method The method we are going to be using
-     * @param $scheme The scheme we are going to be using
+     * @param $method String The method we are going to be using
+     * @param $scheme String The scheme we are going to be using
      * @return bool
      */
     public static function isAvailable($method, $scheme)
@@ -41,7 +45,7 @@ class Curl implements RequestersInterface
     }
 
     /**
-     * @param $method The method we are going to be using
+     * @param $method String The method we are going to be using
      */
     public function setMethod($method)
     {
@@ -50,7 +54,7 @@ class Curl implements RequestersInterface
 
     /**
      * Set the parameters to be used in the request
-     * @param $preparedParams The preparedParams from the Request object
+     * @param $preparedParams Array The preparedParams from the Request object
      */
     public function setParams($preparedParams)
     {

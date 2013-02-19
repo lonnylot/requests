@@ -2,6 +2,10 @@
 
 namespace Requests;
 
+if (defined("\Requests\Version") === false) {
+    require_once(realpath(__DIR__ . "/Api.php"));
+}
+
 class Request
 {
     const GET = 0;
