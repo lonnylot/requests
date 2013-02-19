@@ -61,11 +61,6 @@ class Curl implements RequestersInterface
             CURLOPT_FOLLOWLOCATION => $preparedParams["allowRedirects"]
         ] + $this->params;
 
-        if (array_key_exists("user", $preparedParams["auth"]) && array_key_exists("pass", $preparedParams["auth"])) {
-            $this->params[CURLOPT_HTTPAUTH] = "CURLAUTH_BASIC";
-            $this->params[CURLOPT_USERPWD] = "{$preparedParams["auth"]}:{$preparedParams["pass"]}";
-        }
-
         // Handle cookies
         if (is_string($preparedParams["cookies"]) && is_file($preparedParams["cookies"])) {
             $this->params[CURLOPT_COOKIEFILE] = $preparedParams["cookies"];
@@ -83,6 +78,12 @@ class Curl implements RequestersInterface
                 $this->params[CURLOPT_POSTFIELDS] = $preparedParams["data"];
             }
         }
+
+        // Handle HTTP AUTH
+        if (array_key_exists("user", $preparedParams["auth"]) && array_key_exists("pass", $preparedParams["auth"])) {
+            $this->params[CURLOPT_HTTPAUTH] = CURLAUTH_ANY;
+            $this->params[CURLOPT_USERPWD] = "{$preparedParams["auth"]["user"]}:{$preparedParams["auth"]["pass"]}";
+        }
     }
 
     /**
@@ -93,15 +94,21 @@ class Curl implements RequestersInterface
     {
         $ch = curl_init();
         curl_setopt_array($ch, $this->params);
-        $response = curl_exec($ch);
+        $responseBody = curl_exec($ch);
         $totalTime = curl_getinfo($ch, CURLINFO_TOTAL_TIME);
+        // Get the request headers that were sent
         $this->headers = curl_getinfo($ch, CURLINFO_HEADER_OUT);
         curl_close($ch);
 
-        list($headers, $body) = explode("\r\n\r\n", $response, 2);
+        do {
+            // Split the header and body - overwrite the responseBody w/ the new body
+            list($headers, $responseBody) = explode("\r\n\r\n", $responseBody, 2);
+            // Continue doing this while we have response headers - this is for any connections that require multiple requests
+        } while(preg_match("/^HTTP\/\d\.\d \d{3} [a-zA-Z ]+\\r\\n/", $responseBody));
+
         $headers = explode("\r\n", $headers);
         return [
-            "body" => $body,
+            "body" => $responseBody,
             "headers" => $headers,
             "totalTime" => $totalTime
         ];

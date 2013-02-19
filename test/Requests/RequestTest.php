@@ -74,13 +74,15 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new Requests\Request();
         $response = $request->request(Requests\Request::GET, "http://localhost:8080/RequestTest.php", ["allowRedirects" => true]);
 
-        $this->assertEquals(301, $response->statuscode);
-        $this->assertEquals("8000 HTTP/1.1", $request->headers["get /localhost"]);
+        $this->assertEquals(200, $response->statuscode);
     }
 
     public function testAuth()
     {
-        $this->markTestIncomplete("Auth testing is not yet implemented.");
+        $request = new Requests\Request();
+        $response = $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["params" => ["testAuth" => "yes"], "auth" => ["user" => "testuser", "pass" => "testPass"]]);
+
+        $this->assertEquals(200, $response->statuscode);
     }
 
     public function testFiles()
