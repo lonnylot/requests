@@ -56,12 +56,12 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testProxies()
     {
-        $this->markTestIncomplete("Proxy testing is not yet implemented.");
+        $this->markTestIncomplete("Proxy is implemented, but not test has been created.");
     }
 
     public function testVerify()
     {
-        $this->markTestIncomplete("Verify testing is not yet implemented.");
+        $this->markTestIncomplete("Verify is implemented, but not test has been created.");
     }
 
     public function testStream()
@@ -71,7 +71,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testCert()
     {
-        $this->markTestIncomplete("Cert testing is not yet implemented.");
+        $this->markTestIncomplete("Cert is implemented, but not test has been created.");
     }
 
 }

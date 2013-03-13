@@ -88,6 +88,30 @@ class Curl implements RequestersInterface
             $this->params[CURLOPT_HTTPAUTH] = CURLAUTH_ANY;
             $this->params[CURLOPT_USERPWD] = "{$preparedParams["auth"]["user"]}:{$preparedParams["auth"]["pass"]}";
         }
+
+        // Handle Proxy
+        if (array_key_exists("proxy", $preparedParams)) {
+            $this->params[CURLOPT_HTTPPROXYTUNNEL] = true;
+            $this->params[CURLOPT_PROXY] = $preparedParams["proxy"];
+        }
+
+        // Handle verify
+        if ($preparedParams["verify"]) {
+            $this->params[CURLOPT_SSL_VERIFYPEER] = true;
+            $this->params[CURLOPT_SSL_VERIFYHOST] = 2;
+        } else {
+            $this->params[CURLOPT_SSL_VERIFYPEER] = false;
+            $this->params[CURLOPT_SSL_VERIFYHOST] = false;
+        }
+
+        if (count($preparedParams["cert"])) {
+            if (is_string($preparedParams["cert"])) {
+                $this->params[CURLOPT_SSLCERT] = $preparedParams["cert"];
+            } elseif (is_array($preparedParams["cert"])) {
+                $this->params[CURLOPT_SSLCERT] = array_pop($preparedParams["cert"]);
+                $this->params[CURLOPT_SSLKEY] = array_pop($preparedParams["cert"]);
+            }
+        }
     }
 
     /**

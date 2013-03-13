@@ -34,7 +34,10 @@ class Request
             "cookies"=>[],
             "auth"=>[],
             "timeout"=>30,
-            "allowRedirects"=>false];
+            "allowRedirects"=>false,
+            "proxies"=>[],
+            "verify"=>true,
+            "cert"=>[]];
 
         $this->availableRequesters = ["Requests\Requesters\Curl"];
     }
@@ -69,11 +72,10 @@ class Request
      * auth: (optional) Array of ["user"=>"","pass"=>""] for Basic HTTP Auth
      * timeout: (optional) Float describing the timeout of the request.
      * allowRedirects: (optional) Boolean. Set to True if redirect following is allowed.
-     * NOT IMPLEMENTED:
-     * files: (optional) Dictionary of 'name': file-like-objects (or {'name': ('filename', fileobj)}) for multipart encoding upload.
      * proxies: (optional) Dictionary mapping protocol to the URL of the proxy.
-     * verify: (optional) if ``True``, the SSL cert will be verified. A CA_BUNDLE path can also be provided.
-     * stream: (optional) if ``False``, the response content will be immediately downloaded.
+     * verify: (optional) if ``True``, the SSL cert will be verified. TODO: A CA_BUNDLE path can also be provided.
+     * TODO: files: (optional) Dictionary of 'name': file-like-objects (or {'name': ('filename', fileobj)}) for multipart encoding upload.
+     * TODO: stream: (optional) if ``False``, the response content will be immediately downloaded.
      * cert: (optional) if String, path to ssl client cert file (.pem). If Tuple, ('cert', 'key') pair.
      *
      * @return \Requests\Response
@@ -131,12 +133,22 @@ class Request
             $this->preparedParams["auth"] = [];
         }
 
+        // Build the proxy
+        if (array_key_exists($this->parsedUrl["scheme"], $this->namedParams["proxies"])) {
+            $this->preparedParams["proxy"] = $this->namedParams["proxies"][$this->parsedUrl["scheme"]];
+        }
+
+        // Verify SSL
+        // TODO: Need to handle a string path (CA_BUNDLE?)
+        $this->preparedParams["verify"] = (bool)$this->namedParams["verify"];
+
         // Build everything else
         $this->preparedParams["data"] = $this->namedParams["data"];
         $this->preparedParams["headers"] = $this->namedParams["headers"];
         $this->preparedParams["cookies"] = $this->namedParams["cookies"];
         $this->preparedParams["timeout"] = $this->namedParams["timeout"];
         $this->preparedParams["allowRedirects"] = $this->namedParams["allowRedirects"];
+        $this->preparedParams["cert"] = $this->namedParams["cert"];
     }
 
     private function send()

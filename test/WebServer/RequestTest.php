@@ -1,9 +1,13 @@
 <?php
 
-// Test redirects
+// Test server
 if ($_SERVER["SERVER_PORT"] === "8080") {
-    http_response_code(301);
-    header("Location: http://localhost:8000/RequestTest.php");
+    if (array_key_exists("testProxies", $_GET) && $_GET["testProxies"] === "yes") {
+
+    } else {
+        http_response_code(301);
+        header("Location: http://localhost:8000/RequestTest.php");
+    }
 } elseif (array_key_exists("testAuth", $_GET) && $_GET["testAuth"] === "yes") {
     if (array_key_exists("PHP_AUTH_USER", $_SERVER) === false) {
         header('WWW-Authenticate: Basic realm="RequestTest"');
