@@ -6,10 +6,11 @@ if (defined("\Requests\Version") === false) {
     require_once(realpath(__DIR__ . "/Api.php"));
 }
 
-class Request
+class Session
 {
     const GET = 0;
     const POST = 1;
+    const HEAD = 2;
 
     private $parsedUrl;
     private $method;
@@ -64,19 +65,6 @@ class Request
      * @param $method Request method defined in constants
      * @param $url String URL we are requesting
      * @param $namedParams Array w/ keys as string for the request
-     * Possible values for $namedParams:
-     * params: (optional) Array of key=>val to be sent in the query string
-     * data: (optional) Array or String to be sent in the body
-     * headers: (optional) Array of HTTP Headers
-     * cookies: (optional) Array of cookies or String of the file for a cookie JAR
-     * auth: (optional) Array of ["user"=>"","pass"=>""] for Basic HTTP Auth
-     * timeout: (optional) Float describing the timeout of the request.
-     * allowRedirects: (optional) Boolean. Set to True if redirect following is allowed.
-     * proxies: (optional) Dictionary mapping protocol to the URL of the proxy.
-     * verify: (optional) if ``True``, the SSL cert will be verified. TODO: A CA_BUNDLE path can also be provided.
-     * TODO: files: (optional) Dictionary of 'name': file-like-objects (or {'name': ('filename', fileobj)}) for multipart encoding upload.
-     * TODO: stream: (optional) if ``False``, the response content will be immediately downloaded.
-     * cert: (optional) if String, path to ssl client cert file (.pem). If Tuple, ('cert', 'key') pair.
      *
      * @return \Requests\Response
      *

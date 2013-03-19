@@ -16,6 +16,9 @@ if (isProcRunning($redirectWebServer) === false) {
     throw new \Exception("Failed to start redirect test web server!");
 }
 
+// Wait a moment so the servers setup.
+sleep(1);
+
 /**
  * @param $proc Resource of a running process
  * @return bool

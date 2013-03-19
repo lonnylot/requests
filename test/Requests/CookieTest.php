@@ -19,15 +19,15 @@ class CookieTest extends \PHPUnit_Framework_TestCase
 
     public function testCookies()
     {
-        $request = new Requests\Request();
-        $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["cookies" => ["PHPSESSID=263b62a606693a0c1133cf5aac9db6b2","MYPHPNET=en%2Cquickref%2CNONE%2C0%2C"]]);
+        $request = new Requests\Session();
+        $request->request(Requests\Session::GET, "http://localhost:8000/RequestTest.php", ["cookies" => ["PHPSESSID=263b62a606693a0c1133cf5aac9db6b2","MYPHPNET=en%2Cquickref%2CNONE%2C0%2C"]]);
         $this->assertEquals("PHPSESSID=263b62a606693a0c1133cf5aac9db6b2;MYPHPNET=en%2Cquickref%2CNONE%2C0%2C", $request->headers["cookie"]);
     }
 
     public function testSetCookieJar()
     {
-        $request = new Requests\Request();
-        $response = $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["cookies" => $this->cookieJar]);
+        $request = new Requests\Session();
+        $response = $request->request(Requests\Session::GET, "http://localhost:8000/RequestTest.php", ["cookies" => $this->cookieJar]);
 
         $this->assertRegExp("/".file_get_contents(__DIR__ . "/cookie.jar.expected")."/", file_get_contents($this->cookieJar));
 
@@ -40,8 +40,8 @@ class CookieTest extends \PHPUnit_Framework_TestCase
      */
     public function testCookieJar($cookie)
     {
-        $request = new Requests\Request();
-        $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["cookies" => [$cookie]]);
+        $request = new Requests\Session();
+        $request->request(Requests\Session::GET, "http://localhost:8000/RequestTest.php", ["cookies" => [$cookie]]);
         $this->assertEquals($cookie, $request->headers["cookie"]);
     }
 }

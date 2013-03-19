@@ -81,6 +81,8 @@ class Curl implements RequestersInterface
             } else {
                 $this->params[CURLOPT_POSTFIELDS] = $preparedParams["data"];
             }
+        } elseif ($this->method === 2) {
+            $this->params[CURLOPT_NOBODY] = true;
         }
 
         // Handle HTTP AUTH

@@ -4,30 +4,30 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 {
     public function testHeaders()
     {
-        $request = new Requests\Request();
-        $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["headers" => ["User-Agent: RequestsTest"]]);
+        $request = new Requests\Session();
+        $request->request(Requests\Session::GET, "http://localhost:8000/RequestTest.php", ["headers" => ["User-Agent: RequestsTest"]]);
         $this->assertEquals("RequestsTest", $request->headers["user-agent"]);
     }
 
     public function testUserAgent()
     {
-        $request = new Requests\Request();
-        $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", []);
+        $request = new Requests\Session();
+        $request->request(Requests\Session::GET, "http://localhost:8000/RequestTest.php", []);
         $this->assertEquals("Requests/" . \Requests\Version, $request->headers["user-agent"]);
     }
 
     public function testTimeout()
     {
-        $request = new Requests\Request();
-        $response = $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["params" => ["testTimeout" => "yes"], "timeout" => 1]);
+        $request = new Requests\Session();
+        $response = $request->request(Requests\Session::GET, "http://localhost:8000/RequestTest.php", ["params" => ["testTimeout" => "yes"], "timeout" => 1]);
 
         $this->assertLessThan($response->totaltime, 1);
     }
 
     public function testRedirectNotFollowed()
     {
-        $request = new Requests\Request();
-        $response = $request->request(Requests\Request::GET, "http://localhost:8080/RequestTest.php", []);
+        $request = new Requests\Session();
+        $response = $request->request(Requests\Session::GET, "http://localhost:8080/RequestTest.php", []);
 
         $this->assertEquals(301, $response->statuscode);
         $this->assertNotEquals("8000 HTTP/1.1", $request->headers["get /localhost"]);
@@ -35,16 +35,16 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testRedirectFollowed()
     {
-        $request = new Requests\Request();
-        $response = $request->request(Requests\Request::GET, "http://localhost:8080/RequestTest.php", ["allowRedirects" => true]);
+        $request = new Requests\Session();
+        $response = $request->request(Requests\Session::GET, "http://localhost:8080/RequestTest.php", ["allowRedirects" => true]);
 
         $this->assertEquals(200, $response->statuscode);
     }
 
     public function testAuth()
     {
-        $request = new Requests\Request();
-        $response = $request->request(Requests\Request::GET, "http://localhost:8000/RequestTest.php", ["params" => ["testAuth" => "yes"], "auth" => ["user" => "testuser", "pass" => "testPass"]]);
+        $request = new Requests\Session();
+        $response = $request->request(Requests\Session::GET, "http://localhost:8000/RequestTest.php", ["params" => ["testAuth" => "yes"], "auth" => ["user" => "testuser", "pass" => "testPass"]]);
 
         $this->assertEquals(200, $response->statuscode);
     }

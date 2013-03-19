@@ -18,7 +18,7 @@
          verbose="false">
     <testsuites>
         <testsuite name="Unit">
-            <directory>./test/</directory>
+            <directory>./test/Requests/</directory>
         </testsuite>
     </testsuites>
     <filter>
