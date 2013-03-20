@@ -8,10 +8,6 @@ if (defined("\Requests\Version") === false) {
 
 class Session
 {
-    const GET = 0;
-    const POST = 1;
-    const HEAD = 2;
-
     private $parsedUrl;
     private $method;
     private $namedParams;

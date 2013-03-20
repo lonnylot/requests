@@ -74,14 +74,14 @@ class Curl implements RequestersInterface
         }
 
         // Do POST parameters
-        if ($this->method === 1) {
+        if ($this->method === "post") {
             $this->params[CURLOPT_POST] = true;
             if (is_array($preparedParams["data"])) {
                 $this->params[CURLOPT_POSTFIELDS] = http_build_query($preparedParams["data"]);
             } else {
                 $this->params[CURLOPT_POSTFIELDS] = $preparedParams["data"];
             }
-        } elseif ($this->method === 2) {
+        } elseif ($this->method === "head") {
             $this->params[CURLOPT_NOBODY] = true;
         }
 

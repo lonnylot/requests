@@ -45,7 +45,7 @@ function Get($url, $namedParams=[])
     if (array_key_exists("allowRedirects", $namedParams) === false) {
         $namedParams["allowRedirects"] = 1;
     }
-    return Request(Session::GET, $url, $namedParams);
+    return Request("get", $url, $namedParams);
 }
 
 /**
@@ -57,7 +57,7 @@ function Get($url, $namedParams=[])
  */
 function Post($url, $namedParams=[])
 {
-    return Request(Session::POST, $url, $namedParams);
+    return Request("post", $url, $namedParams);
 }
 
 /**
@@ -69,5 +69,5 @@ function Post($url, $namedParams=[])
  */
 function Head($url, $namedParams=[])
 {
-    return Request(Session::HEAD, $url, $namedParams);
+    return Request("head", $url, $namedParams);
 }
