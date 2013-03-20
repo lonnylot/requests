@@ -32,7 +32,7 @@ class Curl implements RequestersInterface
      */
     public static function isAvailable($method, $scheme)
     {
-        return function_exists('curl_init') ? true : false;
+        return function_exists('curl_init');
     }
 
     /**
